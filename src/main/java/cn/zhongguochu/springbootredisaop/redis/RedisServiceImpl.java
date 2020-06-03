@@ -1,45 +1,58 @@
 package cn.zhongguochu.springbootredisaop.redis;
 
-import cn.zhongguochu.springbootredisaop.User;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
-public class RedisServiceImpl implements RedisService{
-    public void set(String key, String value) {
-
-    }
-
-    public String get(String key) {
-        return null;
-    }
-
-    public void hset(String key, String mapKey, Object mapValue) {
-
-    }
-
-    public <T> T hget(String key, String mapKey, Class<T> t) {
-        return null;
-    }
-
-    public void hmset(String key, String... params) {
-
-    }
-
-    public static void main(String[] args) {
+@Service
+public class RedisServiceImpl implements RedisService {
+    public Jedis getJedis() {
         JedisPoolConfig config = new JedisPoolConfig();
+        System.out.println("初始化jedis");
         config.setMaxIdle(8);
         config.setMaxTotal(18);
         JedisPool jedisPool = new JedisPool(config, "49.233.168.202", 6379, 2000, "yMEKq5IzoAUyqBl1");
         Jedis jedis = jedisPool.getResource();
-        User user = new User("1", "张三", 12, "1954654632", 1);
-        jedis.set("key", JSON.toJSONString(user));
-        String value = jedis.get("key");
+        return jedis;
+    }
+
+    @Override
+    public void set(String key, String value) {
+        getJedis().set(key, value);
+    }
+
+    @Override
+    public void setObject(String key, Object object) {
+        getJedis().set(key, JSON.toJSONString(object));
+    }
+
+    @Override
+    public String get(String key) {
+        return getJedis().get(key);
+    }
+
+    @Override
+    public <T> T getObject(String key, Class<T> t) {
+        String value = getJedis().get(key);
         JSONObject jsonObject = JSON.parseObject(value);
-        System.out.println(jsonObject);
-        User user1 = JSON.toJavaObject(jsonObject, User.class);
-        System.out.println(user1.getName());
+        return JSON.toJavaObject(jsonObject, t);
+    }
+
+    @Override
+    public void hset(String key, String mapKey, Object mapValue) {
+
+    }
+
+    @Override
+    public <T> T hget(String key, String mapKey, Class<T> t) {
+        return null;
+    }
+
+    @Override
+    public void hmset(String key, String... params) {
+
     }
 }
