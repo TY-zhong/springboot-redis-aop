@@ -12,10 +12,8 @@ class SpringbootRedisAopApplicationTests {
 
 	@Test
 	void contextLoads() {
-		User user = redisService.getObject("key", User.class);
-		User user1 = redisService.getObject("key", User.class);
-		System.out.println(user.getName());
-		System.out.println(user1.getPhone());
+		String user = redisService.get("key");
+		System.out.println(user);
 	}
 
 }
