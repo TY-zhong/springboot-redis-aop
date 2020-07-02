@@ -1,4 +1,4 @@
-package cn.zhongguochu.springbootredisaop;
+package cn.zhongguochu.springbootredisaop.entity;
 
 public class User {
     private String id;
